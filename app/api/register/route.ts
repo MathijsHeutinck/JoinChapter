@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
 import { Resend } from 'resend'
 
 const OWNER_EMAIL = 'mathijsheutinck@hotmail.com'
@@ -121,32 +119,21 @@ export async function POST(request: NextRequest) {
       registeredAt: new Date().toISOString(),
     }
 
-    // Persist to JSON file
-    const dataDir = path.join(process.cwd(), 'data')
-    const filePath = path.join(dataDir, 'registrations.json')
-    await fs.mkdir(dataDir, { recursive: true })
-    let registrations: Registration[] = []
-    try {
-      registrations = JSON.parse(await fs.readFile(filePath, 'utf-8'))
-    } catch { /* first entry */ }
-    registrations.push(registration)
-    await fs.writeFile(filePath, JSON.stringify(registrations, null, 2), 'utf-8')
-
-    // Send email notification
-    if (process.env.RESEND_API_KEY) {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const cursusLabel = courseLabels[registration.cursus] ?? registration.cursus
-      const naamLabel = registration.naam || registration.email
-
-      await resend.emails.send({
-        from: 'Chapter <onboarding@resend.dev>',
-        to: OWNER_EMAIL,
-        subject: `Nieuwe aanmelding: ${cursusLabel} — ${naamLabel}`,
-        html: buildEmailHtml(registration),
-      })
-    } else {
-      console.warn('[register] RESEND_API_KEY not set — email not sent')
+    if (!process.env.RESEND_API_KEY) {
+      console.error('[register] RESEND_API_KEY is not set')
+      return NextResponse.json({ error: 'E-mailservice niet geconfigureerd.' }, { status: 500 })
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const cursusLabel = courseLabels[registration.cursus] ?? registration.cursus
+    const naamLabel = registration.naam || registration.email
+
+    await resend.emails.send({
+      from: 'Chapter <onboarding@resend.dev>',
+      to: OWNER_EMAIL,
+      subject: `Nieuwe aanmelding: ${cursusLabel} — ${naamLabel}`,
+      html: buildEmailHtml(registration),
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

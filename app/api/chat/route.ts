@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
 import { Resend } from 'resend'
 
 const OWNER_EMAIL = 'mathijsheutinck@hotmail.com'
-
-interface ChatMessage {
-  naam: string
-  email: string
-  bericht: string
-  receivedAt: string
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,34 +17,26 @@ export async function POST(request: NextRequest) {
 
     const str = (v: string | undefined, max: number) => String(v ?? '').trim().slice(0, max)
 
-    const message: ChatMessage = {
+    const message = {
       naam: str(naam, 200),
       email: str(email, 254).toLowerCase(),
       bericht: str(bericht, 2000),
       receivedAt: new Date().toISOString(),
     }
 
-    // Persist to JSON file
-    const dataDir = path.join(process.cwd(), 'data')
-    const filePath = path.join(dataDir, 'chat-messages.json')
-    await fs.mkdir(dataDir, { recursive: true })
-    let messages: ChatMessage[] = []
-    try {
-      messages = JSON.parse(await fs.readFile(filePath, 'utf-8'))
-    } catch { /* first message */ }
-    messages.push(message)
-    await fs.writeFile(filePath, JSON.stringify(messages, null, 2), 'utf-8')
+    if (!process.env.RESEND_API_KEY) {
+      console.error('[chat] RESEND_API_KEY is not set')
+      return NextResponse.json({ error: 'E-mailservice niet geconfigureerd.' }, { status: 500 })
+    }
 
-    // Send email notification
-    if (process.env.RESEND_API_KEY) {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const naamLabel = message.naam || message.email
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const naamLabel = message.naam || message.email
 
-      await resend.emails.send({
-        from: 'Chapter <onboarding@resend.dev>',
-        to: OWNER_EMAIL,
-        subject: `Nieuwe vraag via Chapter — ${naamLabel}`,
-        html: `<!DOCTYPE html>
+    await resend.emails.send({
+      from: 'Chapter <onboarding@resend.dev>',
+      to: OWNER_EMAIL,
+      subject: `Nieuwe vraag via Chapter — ${naamLabel}`,
+      html: `<!DOCTYPE html>
 <html lang="nl">
 <head><meta charset="UTF-8" /></head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:Georgia,serif;">
@@ -96,10 +79,7 @@ export async function POST(request: NextRequest) {
   </table>
 </body>
 </html>`,
-      })
-    } else {
-      console.warn('[chat] RESEND_API_KEY not set — email not sent')
-    }
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {
