@@ -3,34 +3,46 @@ import fs from 'fs/promises'
 import path from 'path'
 
 interface Registration {
-  courseId: string
   email: string
-  name: string
+  cursus: string
+  datum: string
+  naam: string
+  bedrijf: string
+  functietitel: string
+  telefoonnummer: string
+  locatie: string
+  vragen: string
   registeredAt: string
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { courseId, email, name } = body as {
-      courseId?: string
-      email?: string
-      name?: string
-    }
+    const { email, cursus, datum, naam, bedrijf, functietitel, telefoonnummer, locatie, vragen } = body as Partial<
+      Record<string, string>
+    >
 
     if (!email || !email.includes('@') || !email.includes('.')) {
       return NextResponse.json({ error: 'Ongeldig e-mailadres' }, { status: 400 })
     }
 
+    const str = (v: string | undefined, max: number) => String(v ?? '').trim().slice(0, max)
+
     const registration: Registration = {
-      courseId: String(courseId ?? '').slice(0, 100),
-      email: String(email).trim().toLowerCase().slice(0, 254),
-      name: String(name ?? '').trim().slice(0, 200),
+      email: str(email, 254).toLowerCase(),
+      cursus: str(cursus, 100),
+      datum: str(datum, 100),
+      naam: str(naam, 200),
+      bedrijf: str(bedrijf, 200),
+      functietitel: str(functietitel, 200),
+      telefoonnummer: str(telefoonnummer, 50),
+      locatie: str(locatie, 100),
+      vragen: str(vragen, 2000),
       registeredAt: new Date().toISOString(),
     }
 
     // Persist to a local JSON file.
-    // For Vercel serverless: switch to a database (e.g. Vercel Postgres, PlanetScale)
+    // For Vercel serverless: switch to a database (e.g. Vercel Postgres)
     // or an email service API (Resend, Mailchimp, ConvertKit).
     const dataDir = path.join(process.cwd(), 'data')
     const filePath = path.join(dataDir, 'registrations.json')
