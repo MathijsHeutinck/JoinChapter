@@ -1,16 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-interface DateOption {
-  id: string
-  day: string
-  date: string
-  price: string
-  originalPrice: string | null
-  tag: string | null
-}
 
 interface Course {
   id: string
@@ -46,25 +37,6 @@ const featuredCourse: Course = {
   tag: 'Uitgelicht',
 }
 
-const featuredDates: DateOption[] = [
-  {
-    id: 'juni-2025',
-    day: 'Maandag',
-    date: '16 juni 2025',
-    price: '€495',
-    originalPrice: '€895',
-    tag: 'Vroegboekersprijs',
-  },
-  {
-    id: 'september-2025',
-    day: 'Woensdag',
-    date: '17 september 2025',
-    price: '€895',
-    originalPrice: null,
-    tag: null,
-  },
-]
-
 const otherCourses: Course[] = [
   {
     id: 'claude-financials',
@@ -80,7 +52,7 @@ const otherCourses: Course[] = [
       'Claude instellen als jouw persoonlijke financiële assistent',
       'Bestuursrapportages in een fractie van de tijd opstellen',
       'Complexe spreadsheets analyseren en samenvatten',
-      'Financiële scenarios doorrekenen en presenteren met AI',
+      'Financiële scenario\'s doorrekenen en presenteren met AI',
       'Veilig en verantwoord gebruik van AI in financiën',
     ],
     tag: 'Financials',
@@ -126,6 +98,35 @@ const certificates = [
   },
 ]
 
+const problemsSolutions = [
+  {
+    problem: 'De meeste AI-cursussen sluiten niet aan op mijn eigen werk.',
+    solution: 'Elke oefening is direct gebaseerd op jouw vakgebied. Geen generieke voorbeelden — concrete toepassingen die je diezelfde dag nog gebruikt.',
+  },
+  {
+    problem: 'Ik wil leren met anderen, niet alleen achter mijn scherm.',
+    solution: 'Je leert in een kleine groep vakgenoten die jouw uitdagingen begrijpen. Na de cursus blijf je verbonden via ons peer-network voor on-demand vragen.',
+  },
+  {
+    problem: 'In mijn drukke agenda past gewoon geen meerdaagse cursus.',
+    solution: 'Eén dag, van ochtend tot middag. Je investeert één keer en werkt de dag erna al anders. Geen lange modules, geen verspreid programma.',
+  },
+]
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
+
+function LogoIcon() {
+  return (
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none" className="text-gold" aria-hidden>
+      <rect x="0.75" y="4.75" width="10.5" height="14.5" rx="0.5" stroke="currentColor" strokeWidth="1.25" opacity="0.45" />
+      <rect x="3.75" y="0.75" width="10.5" height="14.5" rx="0.5" stroke="currentColor" strokeWidth="1.25" />
+      <line x1="7" y1="5.5" x2="11" y2="5.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+      <line x1="7" y1="8" x2="12" y2="8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+      <line x1="7" y1="10.5" x2="10" y2="10.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+    </svg>
+  )
+}
+
 function IconCheck() {
   return (
     <svg className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -158,68 +159,137 @@ function IconChevronDown() {
   )
 }
 
-function DateSelector({
-  dates,
-  selected,
-  onChange,
-}: {
-  dates: DateOption[]
-  selected: string
-  onChange: (id: string) => void
-}) {
+function IconChat() {
   return (
-    <div className="space-y-3">
-      {dates.map((d) => {
-        const active = selected === d.id
-        return (
-          <button
-            key={d.id}
-            type="button"
-            onClick={() => onChange(d.id)}
-            className={`w-full text-left border p-4 transition-all ${
-              active ? 'border-navy bg-navy text-white' : 'border-cream-darker bg-white hover:border-navy/40 text-navy'
-            }`}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`font-sans text-sm font-medium ${active ? 'text-white' : 'text-navy'}`}>
-                    {d.day} {d.date}
-                  </span>
-                  {d.tag && (
-                    <span className={`text-xs px-2 py-0.5 font-sans ${active ? 'bg-gold text-white' : 'bg-gold/15 text-gold'}`}>
-                      {d.tag}
-                    </span>
-                  )}
-                </div>
-                {d.originalPrice && (
-                  <span className={`text-xs font-sans ${active ? 'text-white/50' : 'text-navy/40'} line-through`}>
-                    {d.originalPrice}
-                  </span>
-                )}
-              </div>
-              <div className="text-right flex-shrink-0">
-                <span className={`font-serif text-2xl font-bold ${active ? 'text-white' : 'text-navy'}`}>
-                  {d.price}
-                </span>
-              </div>
-            </div>
-          </button>
-        )
-      })}
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+  )
+}
+
+// ─── Problem illustrations ────────────────────────────────────────────────────
+
+function IllustrationMismatch() {
+  return (
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" className="text-navy/25">
+      <rect x="12" y="10" width="34" height="44" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="20" y1="24" x2="38" y2="24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="20" y1="31" x2="38" y2="31" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="20" y1="38" x2="32" y2="38" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="54" cy="46" r="10" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="48" y1="40" x2="60" y2="52" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="60" y1="40" x2="48" y2="52" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IllustrationAlone() {
+  return (
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" className="text-navy/25">
+      <circle cx="36" cy="20" r="8" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M22 48C22 38 50 38 50 48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <rect x="20" y="48" width="32" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="32" r="2.5" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <circle cx="8" cy="50" r="2" stroke="currentColor" strokeWidth="1" opacity="0.25" />
+      <circle cx="60" cy="30" r="2.5" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <circle cx="64" cy="50" r="2" stroke="currentColor" strokeWidth="1" opacity="0.25" />
+    </svg>
+  )
+}
+
+function IllustrationCalendar() {
+  return (
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" className="text-navy/25">
+      <rect x="8" y="16" width="56" height="48" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="8" y1="28" x2="64" y2="28" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="22" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="50" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="13" y="33" width="10" height="7" rx="1" fill="currentColor" opacity="0.35" />
+      <rect x="27" y="33" width="10" height="7" rx="1" fill="currentColor" opacity="0.5" />
+      <rect x="41" y="33" width="10" height="7" rx="1" fill="currentColor" opacity="0.35" />
+      <rect x="55" y="33" width="5" height="7" rx="1" fill="currentColor" opacity="0.5" />
+      <rect x="13" y="44" width="10" height="7" rx="1" fill="currentColor" opacity="0.5" />
+      <rect x="27" y="44" width="10" height="7" rx="1" fill="currentColor" opacity="0.35" />
+      <rect x="41" y="44" width="10" height="7" rx="1" fill="currentColor" opacity="0.5" />
+      <rect x="55" y="44" width="5" height="7" rx="1" fill="currentColor" opacity="0.35" />
+      <rect x="13" y="55" width="10" height="5" rx="1" fill="currentColor" opacity="0.35" />
+      <rect x="27" y="55" width="10" height="5" rx="1" fill="currentColor" opacity="0.5" />
+    </svg>
+  )
+}
+
+// ─── Utility hook ─────────────────────────────────────────────────────────────
+
+function useInView(threshold = 0.25) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true) },
+      { threshold }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+
+  return [ref, inView] as const
+}
+
+// ─── Problem / Solution row ───────────────────────────────────────────────────
+
+const illustrations = [<IllustrationMismatch key={0} />, <IllustrationAlone key={1} />, <IllustrationCalendar key={2} />]
+
+function ProblemSolutionRow({
+  problem,
+  solution,
+  index,
+}: {
+  problem: string
+  solution: string
+  index: number
+}) {
+  const [solutionRef, solutionVisible] = useInView(0.25)
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-10 lg:gap-24 items-center py-14 border-b border-cream-darker last:border-0">
+      {/* Problem */}
+      <div className="flex items-center gap-8">
+        <div className="flex-shrink-0">{illustrations[index]}</div>
+        <p className="font-serif text-navy text-xl md:text-2xl leading-snug">{problem}</p>
+      </div>
+
+      {/* Solution — slides in when in view */}
+      <div
+        ref={solutionRef}
+        className="transition-all duration-700 ease-out"
+        style={{
+          opacity: solutionVisible ? 1 : 0,
+          transform: solutionVisible ? 'translateX(0)' : 'translateX(2.5rem)',
+          transitionDelay: `${index * 80}ms`,
+        }}
+      >
+        <div className="border-l-2 border-gold pl-6">
+          <span className="text-gold text-xs tracking-widest uppercase block mb-3 font-sans">Bij Chapter</span>
+          <p className="text-navy/70 font-sans leading-relaxed">{solution}</p>
+        </div>
+      </div>
     </div>
   )
 }
 
-function EmailCapture({ courseId, selectedDate }: { courseId: string; selectedDate: string }) {
+// ─── Email capture (step 1 → redirect to /aanmelden) ─────────────────────────
+
+function EmailCapture({ courseId }: { courseId: string }) {
   const [email, setEmail] = useState('')
   const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
-    const params = new URLSearchParams({ email, cursus: courseId, datum: selectedDate })
-    router.push(`/aanmelden?${params}`)
+    router.push(`/aanmelden?${new URLSearchParams({ email, cursus: courseId })}`)
   }
 
   return (
@@ -245,7 +315,7 @@ function EmailCapture({ courseId, selectedDate }: { courseId: string; selectedDa
         <IconArrow />
       </button>
       <p className="text-xs font-sans text-navy/30">
-        Geen spam. Je wordt doorgestuurd naar een kort aanmeldformulier.
+        Je wordt doorgestuurd naar een kort aanmeldformulier.
       </p>
     </form>
   )
@@ -258,9 +328,8 @@ function ModalEmailCapture({ courseId, onClose }: { courseId: string; onClose: (
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
-    const params = new URLSearchParams({ email, cursus: courseId })
     onClose()
-    router.push(`/aanmelden?${params}`)
+    router.push(`/aanmelden?${new URLSearchParams({ email, cursus: courseId })}`)
   }
 
   return (
@@ -285,13 +354,13 @@ function ModalEmailCapture({ courseId, onClose }: { courseId: string; onClose: (
   )
 }
 
+// ─── Course modal ─────────────────────────────────────────────────────────────
+
 function CourseModal({ course, onClose }: { course: Course; onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 md:p-8"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className="bg-cream w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
         <button
@@ -309,17 +378,11 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
         </div>
 
         <div className="px-8 py-10 md:px-12 md:py-12">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5 p-6 bg-cream-dark mb-8">
-            {(
-              [
-                ['Duur', course.duration],
-                ['Format', course.format],
-                ['Niveau', course.level],
-              ] as [string, string][]
-            ).map(([label, value]) => (
-              <div key={label} className="col-span-1 last:col-span-2">
-                <p className="text-navy/40 text-xs tracking-widest uppercase mb-1">{label}</p>
-                <p className="font-sans font-medium text-navy text-sm">{value}</p>
+          <div className="grid grid-cols-3 gap-4 p-6 bg-cream-dark mb-8">
+            {([['Duur', course.duration], ['Format', course.format], ['Niveau', course.level]] as [string, string][]).map(([l, v]) => (
+              <div key={l} className="col-span-3 sm:col-span-1">
+                <p className="text-navy/40 text-xs tracking-widest uppercase mb-1">{l}</p>
+                <p className="font-sans font-medium text-navy text-sm">{v}</p>
               </div>
             ))}
           </div>
@@ -336,10 +399,9 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
             ))}
           </ul>
 
-          <div className="border-t border-cream-darker pt-8 mb-8">
-            <p className="text-navy/40 text-xs tracking-widest uppercase mb-2">Interesse aanmelden</p>
-            <p className="text-navy/60 font-sans text-sm mb-6 leading-relaxed">
-              Laat je e-mailadres achter en we sturen je alle details — inclusief data, locaties en prijs.
+          <div className="border-t border-cream-darker pt-8">
+            <p className="text-navy/55 font-sans text-sm mb-6 leading-relaxed">
+              Laat je e-mailadres achter en we sturen je alle details over data, locaties en prijs.
             </p>
             <ModalEmailCapture courseId={course.id} onClose={onClose} />
           </div>
@@ -349,21 +411,137 @@ function CourseModal({ course, onClose }: { course: Course; onClose: () => void 
   )
 }
 
+// ─── Chat widget ──────────────────────────────────────────────────────────────
+
+function ChatWidget() {
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({ naam: '', email: '', bericht: '' })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+
+  const set = (field: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((prev) => ({ ...prev, [field]: e.target.value }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSending(true)
+    setError('')
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) setSent(true)
+      else setError('Er ging iets mis. Probeer het opnieuw.')
+    } catch {
+      setError('Er ging iets mis. Probeer het opnieuw.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const inputClass =
+    'w-full bg-white border border-cream-darker text-navy placeholder-navy/30 px-3 py-2.5 text-sm font-sans focus:outline-none focus:border-gold transition-colors'
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      {/* Panel */}
+      {open && (
+        <div className="w-80 bg-cream shadow-2xl border border-cream-darker overflow-hidden">
+          <div className="bg-navy px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="font-serif text-white text-base font-bold">Stel een vraag</p>
+              <p className="text-white/45 text-xs font-sans mt-0.5">We antwoorden zo snel mogelijk</p>
+            </div>
+            <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white transition-colors">
+              <IconClose />
+            </button>
+          </div>
+
+          <div className="p-5">
+            {sent ? (
+              <div className="text-center py-6">
+                <div className="w-12 h-12 bg-gold/10 flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p className="font-serif text-navy text-lg font-bold mb-2">Bericht ontvangen</p>
+                <p className="text-navy/55 font-sans text-sm">We nemen zo snel mogelijk contact op.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Naam"
+                  value={form.naam}
+                  onChange={set('naam')}
+                  required
+                  className={inputClass}
+                />
+                <input
+                  type="email"
+                  placeholder="E-mailadres"
+                  value={form.email}
+                  onChange={set('email')}
+                  required
+                  className={inputClass}
+                />
+                <textarea
+                  placeholder="Jouw vraag..."
+                  value={form.bericht}
+                  onChange={set('bericht')}
+                  required
+                  rows={4}
+                  className={inputClass + ' resize-none'}
+                />
+                {error && <p className="text-red-500 text-xs font-sans">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="w-full bg-gold hover:bg-gold-light disabled:opacity-60 text-white text-sm font-sans py-3 transition-colors"
+                >
+                  {sending ? 'Bezig...' : 'Versturen →'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Toggle button */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-14 h-14 bg-gold hover:bg-gold-light shadow-lg flex items-center justify-center text-white transition-colors"
+        aria-label={open ? 'Chat sluiten' : 'Chat openen'}
+      >
+        {open ? <IconClose /> : <IconChat />}
+      </button>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
-  const [selectedDate, setSelectedDate] = useState(featuredDates[0].id)
-
-  const activeDate = featuredDates.find((d) => d.id === selectedDate) ?? featuredDates[0]
 
   return (
     <>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-navy/95 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#" className="font-serif text-white text-2xl tracking-widest font-bold select-none">
-            CHAPTER
+          <a href="#" className="flex items-center gap-2.5 select-none">
+            <LogoIcon />
+            <span className="font-serif text-white text-2xl tracking-widest font-bold">CHAPTER</span>
           </a>
-          <a href="#uitgelicht" className="bg-gold hover:bg-gold-light text-white text-sm tracking-wide px-5 py-2.5 transition-colors font-sans">
+          <a
+            href="#uitgelicht"
+            className="bg-gold hover:bg-gold-light text-white text-sm tracking-wide px-5 py-2.5 transition-colors font-sans"
+          >
             Aanmelden
           </a>
         </div>
@@ -386,29 +564,26 @@ export default function Home() {
             style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(44,66,112,0.4) 0%, transparent 70%)' }}
           />
 
-          <div className="relative z-10 text-center px-6 pt-20 pb-24 max-w-5xl mx-auto">
-            <span className="inline-block text-gold text-xs tracking-widest uppercase mb-8 font-sans">
-              Superpraktische AI cursus · Voor professionals
+          <div className="relative z-10 text-center px-6 pt-20 pb-24 max-w-4xl mx-auto">
+            <span className="inline-block text-gold text-xs tracking-widest uppercase mb-10 font-sans">
+              De meest praktische AI cursus voor de professionals van morgen
             </span>
             <h1
               className="font-serif text-white font-bold leading-[1.1] mb-8"
-              style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)' }}
+              style={{ fontSize: 'clamp(2.75rem, 8vw, 5.5rem)' }}
             >
-              Eindelijk een AI cursus<br />die wél aansluit op jou.
+              Jouw volgende<br />hoofdstuk begint hier.
             </h1>
             <p
-              className="text-white/60 font-sans leading-relaxed mx-auto mb-6 max-w-2xl"
-              style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}
-            >
-              Geen generieke theorie. Geen ellenlange e-learnings. Geen cursussen die niet aansluiten op jouw werkelijkheid.
-            </p>
-            <p
-              className="text-white/80 font-sans leading-relaxed mx-auto mb-14 max-w-2xl font-medium"
+              className="text-white/60 font-sans leading-relaxed mx-auto mb-14 max-w-lg"
               style={{ fontSize: 'clamp(1rem, 2.5vw, 1.15rem)' }}
             >
               Leer samen met vakgenoten hoe AI jouw werk concreet verbetert — in één dag.
             </p>
-            <a href="#uitgelicht" className="inline-flex flex-col items-center gap-2 text-white/35 hover:text-white/55 transition-colors">
+            <a
+              href="#uitgelicht"
+              className="inline-flex flex-col items-center gap-2 text-white/35 hover:text-white/55 transition-colors"
+            >
               <span className="text-sm tracking-wide font-sans">Bekijk de cursus</span>
               <IconChevronDown />
             </a>
@@ -416,37 +591,22 @@ export default function Home() {
         </section>
 
         {/* Problems → Solutions */}
-        <section className="bg-cream-dark py-16 md:py-20 px-6 border-b border-cream-darker">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-            {[
-              {
-                problem: '"Het aanbod sluit niet aan op mijn werk."',
-                solution: 'Iedere oefening is gebaseerd op jouw situatie. Geen generieke voorbeelden — wel directe toepassingen voor jouw vakgebied.',
-                icon: '01',
-              },
-              {
-                problem: '"Ik wil niet alleen leren."',
-                solution: 'Kleine groepen vakgenoten die jouw uitdagingen begrijpen. Leer van elkaar en bouw een netwerk dat je bij blijft.',
-                icon: '02',
-              },
-              {
-                problem: '"Ik heb geen tijd."',
-                solution: 'Eén dag investering. Op maandag naar de cursus, dinsdag al anders werken. Plus: stel nadien on-demand vragen aan je peers.',
-                icon: '03',
-              },
-            ].map(({ problem, solution, icon }) => (
-              <div key={icon} className="bg-cream p-8">
-                <span className="font-serif text-gold text-4xl font-bold mb-6 block opacity-40">{icon}</span>
-                <p className="font-serif text-navy text-lg italic mb-4 leading-snug">{problem}</p>
-                <div className="h-px w-8 bg-gold/40 mb-4" />
-                <p className="text-navy/65 font-sans text-sm leading-relaxed">{solution}</p>
-              </div>
-            ))}
+        <section className="bg-cream py-24 md:py-32 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 mb-16">
+              <span className="h-px w-12 bg-cream-darker block" />
+              <span className="text-gold text-xs tracking-widest uppercase font-sans">Herkenbaar?</span>
+            </div>
+            <div>
+              {problemsSolutions.map(({ problem, solution }, i) => (
+                <ProblemSolutionRow key={i} problem={problem} solution={solution} index={i} />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Featured Course */}
-        <section id="uitgelicht" className="bg-cream py-24 md:py-32 px-6">
+        <section id="uitgelicht" className="bg-cream-dark py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 mb-16">
               <span className="h-px w-12 bg-cream-darker block" />
@@ -456,7 +616,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-start">
               {/* Left */}
               <div>
-                <span className="inline-block text-gold text-xs tracking-widest uppercase bg-gold/10 px-3 py-1.5 font-sans mb-4">
+                <span className="inline-block text-gold text-xs tracking-widest uppercase bg-gold/10 px-3 py-1.5 font-sans mb-6">
                   {featuredCourse.targetRole}
                 </span>
                 <h2
@@ -466,20 +626,8 @@ export default function Home() {
                   {featuredCourse.title}
                 </h2>
                 <p className="text-navy/50 font-sans text-lg mb-8">{featuredCourse.subtitle}</p>
-                <p className="text-navy/75 font-sans leading-relaxed mb-10">{featuredCourse.description}</p>
+                <p className="text-navy/75 font-sans leading-relaxed mb-12">{featuredCourse.description}</p>
 
-                {/* Concrete result callout */}
-                <div className="bg-navy text-white px-6 py-5 mb-12 flex items-start gap-4">
-                  <svg className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <p className="font-sans text-sm leading-relaxed">
-                    <strong className="font-medium">Ga naar huis met een concreet en tastbaar resultaat:</strong>{' '}
-                    je eigen AI agent, gebouwd en klaar voor gebruik in jouw organisatie.
-                  </p>
-                </div>
-
-                {/* Topics */}
                 <div className="mb-12">
                   <h3 className="font-serif text-navy text-lg font-bold mb-5">Wat je leert</h3>
                   <ul className="space-y-3.5">
@@ -492,18 +640,11 @@ export default function Home() {
                   </ul>
                 </div>
 
-                {/* Date selection */}
-                <div className="mb-10">
-                  <h3 className="font-serif text-navy text-lg font-bold mb-5">Kies je datum</h3>
-                  <DateSelector dates={featuredDates} selected={selectedDate} onChange={setSelectedDate} />
-                </div>
-
-                {/* Email capture */}
                 <h3 className="font-serif text-navy text-xl font-bold mb-5">Meld je aan</h3>
-                <EmailCapture courseId={featuredCourse.id} selectedDate={selectedDate} />
+                <EmailCapture courseId={featuredCourse.id} />
               </div>
 
-              {/* Right: sticky card */}
+              {/* Right: sticky details card */}
               <div className="lg:sticky lg:top-24">
                 <div className="bg-navy text-white p-8 md:p-10">
                   <p className="text-white/40 text-xs tracking-widest uppercase mb-8 font-sans">Cursusdetails</p>
@@ -513,7 +654,6 @@ export default function Home() {
                         ['Niveau', featuredCourse.level],
                         ['Format', featuredCourse.format],
                         ['Duur', featuredCourse.duration],
-                        ['Datum', `${activeDate.day} ${activeDate.date}`],
                       ] as [string, string][]
                     ).map(([label, value]) => (
                       <div key={label} className="border-b border-white/10 pb-7 last:border-0 last:pb-0">
@@ -525,23 +665,13 @@ export default function Home() {
                   <div className="border-t border-white/10 pt-8">
                     <p className="text-white/40 text-xs tracking-widest uppercase mb-3 font-sans">Investering</p>
                     <div className="flex items-baseline gap-3">
-                      <span className="font-serif text-5xl font-bold">{activeDate.price}</span>
-                      {activeDate.originalPrice && (
-                        <span className="text-white/30 text-lg font-sans line-through">{activeDate.originalPrice}</span>
-                      )}
+                      <span className="font-serif text-4xl font-bold">Vanaf €495</span>
                     </div>
-                    {activeDate.tag && (
-                      <span className="inline-block mt-2 bg-gold text-white text-xs px-3 py-1 font-sans">{activeDate.tag}</span>
-                    )}
-                    <p className="text-white/30 text-xs font-sans mt-3">excl. BTW · Betalingsplan beschikbaar</p>
+                    <p className="text-white/30 text-xs font-sans mt-2 leading-relaxed">
+                      16 juni — vroegboekersprijs €495<br />
+                      17 september — reguliere prijs €895
+                    </p>
                   </div>
-                </div>
-
-                <div className="mt-8 p-6 border-l-2 border-gold">
-                  <p className="font-serif text-navy/70 text-lg italic leading-relaxed mb-4">
-                    &ldquo;Met de superpraktische AI cursus van Chapter ben je als professional klaar voor het volgende hoofdstuk.&rdquo;
-                  </p>
-                  <p className="text-navy/40 text-xs tracking-wide uppercase font-sans">— Chapter</p>
                 </div>
               </div>
             </div>
@@ -549,7 +679,7 @@ export default function Home() {
         </section>
 
         {/* Other Courses */}
-        <section id="cursussen" className="bg-cream-dark py-24 md:py-32 px-6">
+        <section id="cursussen" className="bg-cream py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 mb-16">
               <span className="h-px w-12 bg-cream-darker block" />
@@ -561,7 +691,7 @@ export default function Home() {
                 <button
                   key={course.id}
                   onClick={() => setSelectedCourse(course)}
-                  className="text-left bg-cream p-8 md:p-10 hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-cream-darker"
+                  className="text-left bg-cream-dark p-8 md:p-10 hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-cream-darker"
                 >
                   <div className="flex items-start justify-between mb-5">
                     <span className="text-gold text-xs tracking-widest uppercase bg-gold/10 px-3 py-1.5 font-sans">
@@ -606,7 +736,7 @@ export default function Home() {
               ))}
             </div>
             <p className="text-white/35 font-sans text-sm mt-6">
-              Cursussen worden gegeven op meerdere locaties door het land. Geef bij aanmelding je voorkeur op.
+              Geef bij aanmelding je locatievoorkeur op. Cursussen starten zodra er voldoende deelnemers zijn.
             </p>
           </div>
         </section>
@@ -628,14 +758,12 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-8">
               {certificates.map((cert) => (
                 <div key={cert.title} className="text-center">
-                  {/* Badge / Seal */}
                   <div className="relative w-32 h-32 mx-auto mb-8">
                     <div className="absolute inset-0 rounded-full border-4 border-gold/30" />
                     <div className="absolute inset-2 rounded-full border-2 border-gold/20" />
                     <div className="absolute inset-0 rounded-full bg-navy flex items-center justify-center">
                       <span className="font-serif text-gold text-3xl font-bold">{cert.roman}</span>
                     </div>
-                    {/* Outer ring decoration */}
                     {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
                       <div
                         key={deg}
@@ -674,15 +802,36 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-navy-dark border-t border-white/10 py-12 px-6">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="font-serif text-white text-xl tracking-widest font-bold">CHAPTER</span>
-            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-xs text-white/25 font-sans">
-              <a href="https://www.joinchapter.nl" className="hover:text-white/50 transition-colors">
-                www.joinchapter.nl
+        <footer className="bg-navy-dark">
+          {/* Value proposition */}
+          <div className="border-b border-white/10 py-20 px-6 text-center">
+            <div className="flex items-center justify-center gap-4 mb-10">
+              <span className="h-px w-12 bg-white/15 block" />
+              <LogoIcon />
+              <span className="h-px w-12 bg-white/15 block" />
+            </div>
+            <p
+              className="font-serif text-white font-bold leading-tight max-w-3xl mx-auto"
+              style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}
+            >
+              Met de meest praktische AI cursus ben je als professional klaar voor het volgende hoofdstuk.
+            </p>
+          </div>
+
+          {/* Copyright */}
+          <div className="py-8 px-6">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+              <a href="#" className="flex items-center gap-2.5 select-none">
+                <LogoIcon />
+                <span className="font-serif text-white text-lg tracking-widest font-bold">CHAPTER</span>
               </a>
-              <span className="hidden md:block text-white/15">·</span>
-              <span>© 2025 Chapter. Alle rechten voorbehouden.</span>
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-xs text-white/25 font-sans">
+                <a href="https://www.joinchapter.nl" className="hover:text-white/50 transition-colors">
+                  www.joinchapter.nl
+                </a>
+                <span className="hidden md:block text-white/15">·</span>
+                <span>© 2025 Chapter. Alle rechten voorbehouden.</span>
+              </div>
             </div>
           </div>
         </footer>
@@ -691,6 +840,8 @@ export default function Home() {
       {selectedCourse && (
         <CourseModal course={selectedCourse} onClose={() => setSelectedCourse(null)} />
       )}
+
+      <ChatWidget />
     </>
   )
 }
