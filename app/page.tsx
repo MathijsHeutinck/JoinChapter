@@ -593,9 +593,12 @@ export default function Home() {
         {/* Problems → Solutions */}
         <section className="bg-cream py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="h-px w-12 bg-cream-darker block" />
-              <span className="text-gold text-xs tracking-widest uppercase font-sans">Herkenbaar?</span>
+            <div className="text-center mb-16">
+              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+                <span className="h-px w-10 bg-gold/30" />
+                Herkenbaar?
+                <span className="h-px w-10 bg-gold/30" />
+              </span>
             </div>
             <div>
               {problemsSolutions.map(({ problem, solution }, i) => (
@@ -608,9 +611,12 @@ export default function Home() {
         {/* Featured Course */}
         <section id="uitgelicht" className="bg-cream-dark py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="h-px w-12 bg-cream-darker block" />
-              <span className="text-gold text-xs tracking-widest uppercase font-sans">Uitgelichte Cursus</span>
+            <div className="text-center mb-16">
+              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+                <span className="h-px w-10 bg-gold/30" />
+                Uitgelichte Cursus
+                <span className="h-px w-10 bg-gold/30" />
+              </span>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-start">
@@ -663,14 +669,24 @@ export default function Home() {
                     ))}
                   </div>
                   <div className="border-t border-white/10 pt-8">
-                    <p className="text-white/40 text-xs tracking-widest uppercase mb-3 font-sans">Investering</p>
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-serif text-4xl font-bold">Vanaf €495</span>
+                    <p className="text-white/40 text-xs tracking-widest uppercase mb-4 font-sans">Investering</p>
+                    {/* June — early bird */}
+                    <div className="border border-gold/40 p-4 mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-white/50 text-xs font-sans tracking-wide">16 juni 2025</span>
+                        <span className="bg-gold text-white text-xs px-2 py-0.5 font-sans tracking-wide">Vroegboeker</span>
+                      </div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-serif text-3xl font-bold">€495</span>
+                        <span className="text-white/30 text-base line-through font-sans">€895</span>
+                      </div>
                     </div>
-                    <p className="text-white/30 text-xs font-sans mt-2 leading-relaxed">
-                      16 juni — vroegboekersprijs €495<br />
-                      17 september — reguliere prijs €895
-                    </p>
+                    {/* September */}
+                    <div className="border border-white/10 p-4">
+                      <span className="text-white/50 text-xs font-sans tracking-wide block mb-2">17 september 2025</span>
+                      <span className="font-serif text-2xl font-bold text-white/55">€895</span>
+                    </div>
+                    <p className="text-white/25 text-xs font-sans mt-3">excl. BTW · Kies je datum bij aanmelding</p>
                   </div>
                 </div>
               </div>
@@ -681,9 +697,12 @@ export default function Home() {
         {/* Other Courses */}
         <section id="cursussen" className="bg-cream py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-16">
-              <span className="h-px w-12 bg-cream-darker block" />
-              <span className="text-gold text-xs tracking-widest uppercase font-sans">Meer Cursussen</span>
+            <div className="text-center mb-16">
+              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+                <span className="h-px w-10 bg-gold/30" />
+                Meer Cursussen
+                <span className="h-px w-10 bg-gold/30" />
+              </span>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
@@ -721,83 +740,37 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Locations */}
-        <section className="bg-navy py-16 px-6 border-t border-white/10">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-10">
-              <span className="h-px w-12 bg-white/15 block" />
-              <span className="text-white/40 text-xs tracking-widest uppercase font-sans">Locaties</span>
-            </div>
-            <div className="flex flex-wrap gap-x-8 gap-y-3">
-              {locations.map((city) => (
-                <span key={city} className="font-serif text-white text-xl font-medium">
-                  {city}
-                </span>
-              ))}
-            </div>
-            <p className="text-white/35 font-sans text-sm mt-6">
-              Geef bij aanmelding je locatievoorkeur op. Cursussen starten zodra er voldoende deelnemers zijn.
-            </p>
-          </div>
-        </section>
-
-        {/* Certificates */}
-        <section className="bg-cream py-24 md:py-32 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="h-px w-12 bg-cream-darker block" />
-              <span className="text-gold text-xs tracking-widest uppercase font-sans">Certificering</span>
-            </div>
-            <h2
-              className="font-serif text-navy font-bold mb-16 max-w-2xl"
-              style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}
-            >
-              Verdien een toonaangevend certificaat dat jouw expertise bewijst.
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {certificates.map((cert) => (
-                <div key={cert.title} className="text-center">
-                  <div className="relative w-32 h-32 mx-auto mb-8">
-                    <div className="absolute inset-0 rounded-full border-4 border-gold/30" />
-                    <div className="absolute inset-2 rounded-full border-2 border-gold/20" />
-                    <div className="absolute inset-0 rounded-full bg-navy flex items-center justify-center">
-                      <span className="font-serif text-gold text-3xl font-bold">{cert.roman}</span>
-                    </div>
-                    {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-                      <div
-                        key={deg}
-                        className="absolute w-1.5 h-1.5 bg-gold/40 rounded-full"
-                        style={{
-                          top: `${50 - 46 * Math.cos((deg * Math.PI) / 180)}%`,
-                          left: `${50 + 46 * Math.sin((deg * Math.PI) / 180)}%`,
-                          transform: 'translate(-50%, -50%)',
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <h3 className="font-serif text-navy text-xl font-bold mb-3">{cert.title}</h3>
-                  <p className="text-navy/55 font-sans text-sm leading-relaxed">{cert.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* About Chapter */}
-        <section id="over" className="bg-navy py-28 md:py-36 px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="text-gold text-xs tracking-widest uppercase block mb-10 font-sans">Over Chapter</span>
-            <h2
-              className="font-serif text-white font-bold leading-tight mb-10"
-              style={{ fontSize: 'clamp(1.75rem, 4.5vw, 3.5rem)' }}
-            >
-              Het volgende hoofdstuk van je carrière verdient de beste voorbereiding.
-            </h2>
-            <div className="h-px w-16 bg-gold/40 mx-auto mb-10" />
-            <p className="text-white/55 font-sans leading-relaxed text-lg max-w-2xl mx-auto">
-              Chapter is opgericht voor professionals die voelen dat ze klaar zijn voor meer. We geloven dat AI niet voor iedereen hetzelfde is — en dat een cursus pas echt waarde heeft als die aansluit op jouw werk, jouw vak en jouw manier van leren. Dat doen we samen, met vakgenoten die je begrijpen.
-            </p>
+        <section id="over" className="bg-navy py-24 md:py-32 px-6">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+            {/* Text */}
+            <div>
+              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans mb-10">
+                <span className="h-px w-10 bg-gold/30" />
+                Over Chapter
+                <span className="h-px w-10 bg-gold/30" />
+              </span>
+              <h2
+                className="font-serif text-white font-bold leading-tight mb-8"
+                style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}
+              >
+                Het volgende hoofdstuk van je carrière verdient de beste voorbereiding.
+              </h2>
+              <div className="h-px w-16 bg-gold/40 mb-8" />
+              <p className="text-white/55 font-sans leading-relaxed text-lg">
+                Chapter is opgericht voor professionals die voelen dat ze klaar zijn voor meer. We geloven dat AI niet voor iedereen hetzelfde is — en dat een cursus pas echt waarde heeft als die aansluit op jouw werk, jouw vak en jouw manier van leren. Dat doen we samen, met vakgenoten die je begrijpen.
+              </p>
+            </div>
+
+            {/* Photo */}
+            <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+              {/* Vervang de src hieronder door een eigen foto van een interactieve sessie */}
+              <img
+                src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=80"
+                alt="Interactieve Chapter cursus sessie"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </section>
 
@@ -811,11 +784,18 @@ export default function Home() {
               <span className="h-px w-12 bg-white/15 block" />
             </div>
             <p
-              className="font-serif text-white font-bold leading-tight max-w-3xl mx-auto"
+              className="font-serif text-white font-bold leading-tight max-w-3xl mx-auto mb-10"
               style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}
             >
               Met de meest praktische AI cursus ben je als professional klaar voor het volgende hoofdstuk.
             </p>
+            <a
+              href="#uitgelicht"
+              className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-white font-sans text-sm tracking-wide px-8 py-4 transition-colors"
+            >
+              <span>Begin met het volgende hoofdstuk</span>
+              <IconArrow />
+            </a>
           </div>
 
           {/* Copyright */}
