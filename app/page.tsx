@@ -258,7 +258,7 @@ function ProblemSolutionRow({
       {/* Problem */}
       <div className="flex items-center gap-8">
         <div className="flex-shrink-0">{illustrations[index]}</div>
-        <p className="font-serif text-navy text-xl md:text-2xl leading-snug">{problem}</p>
+        <p className="font-serif italic text-navy text-xl md:text-2xl leading-snug">{problem}</p>
       </div>
 
       {/* Solution — slides in when in view */}
@@ -550,6 +550,14 @@ export default function Home() {
       <main>
         {/* Hero */}
         <section className="min-h-screen bg-navy relative overflow-hidden flex items-center justify-center">
+          {/* Grain texture */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
+              opacity: 0.045,
+            }}
+          />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-[500px] h-[500px] rounded-full border border-white/[0.04]" />
           </div>
@@ -561,40 +569,62 @@ export default function Home() {
           </div>
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(44,66,112,0.4) 0%, transparent 70%)' }}
+            style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(44,66,112,0.45) 0%, transparent 70%)' }}
           />
 
-          <div className="relative z-10 text-center px-6 pt-20 pb-24 max-w-4xl mx-auto">
-            <span className="inline-block text-gold text-xs tracking-widest uppercase mb-10 font-sans">
-              De meest praktische AI cursus voor de professionals van morgen
-            </span>
-            <h1
-              className="font-serif text-white font-bold leading-[1.1] mb-8"
-              style={{ fontSize: 'clamp(2.75rem, 8vw, 5.5rem)' }}
-            >
-              Jouw volgende<br />hoofdstuk begint hier.
-            </h1>
-            <p
-              className="text-white/60 font-sans leading-relaxed mx-auto mb-14 max-w-lg"
-              style={{ fontSize: 'clamp(1rem, 2.5vw, 1.15rem)' }}
-            >
-              Leer samen met vakgenoten hoe AI jouw werk concreet verbetert — in één dag.
-            </p>
-            <a
-              href="#uitgelicht"
-              className="inline-flex flex-col items-center gap-2 text-white/35 hover:text-white/55 transition-colors"
-            >
-              <span className="text-sm tracking-wide font-sans">Bekijk de cursus</span>
-              <IconChevronDown />
-            </a>
+          <div className="relative z-10 text-center px-6 pt-20 pb-24 max-w-5xl mx-auto">
+            <div className="hero-line-1">
+              <span className="inline-block text-gold text-xs tracking-widest uppercase mb-10 font-sans">
+                De meest praktische AI cursus voor de professionals van morgen
+              </span>
+            </div>
+            <div className="hero-line-2">
+              <h1
+                className="font-serif text-white font-bold leading-[1.05] mb-8"
+                style={{ fontSize: 'clamp(3.25rem, 9vw, 6.5rem)' }}
+              >
+                Jouw volgende<br />hoofdstuk begint hier.
+              </h1>
+            </div>
+            <div className="hero-line-3">
+              <p
+                className="text-white/55 font-sans leading-relaxed mx-auto mb-12 max-w-lg"
+                style={{ fontSize: 'clamp(1rem, 2.5vw, 1.15rem)' }}
+              >
+                Leer samen met vakgenoten hoe AI jouw werk concreet verbetert — in één dag.
+              </p>
+            </div>
+            <div className="hero-line-4">
+              <div className="flex items-center justify-center gap-5 mb-12">
+                <span className="h-px w-14 bg-gold/35" />
+                <LogoIcon />
+                <span className="h-px w-14 bg-gold/35" />
+              </div>
+            </div>
+            <div className="hero-line-5">
+              <a
+                href="#uitgelicht"
+                className="inline-flex flex-col items-center gap-2 text-white/35 hover:text-white/55 transition-colors"
+              >
+                <span className="text-sm tracking-wide font-sans">Bekijk de cursus</span>
+                <IconChevronDown />
+              </a>
+            </div>
           </div>
         </section>
 
         {/* Problems → Solutions */}
         <section className="bg-cream py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+            <div className="text-center mb-16 relative">
+              <span
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2 font-serif font-bold leading-none select-none pointer-events-none text-navy/[0.035] hidden md:block"
+                style={{ fontSize: 'clamp(8rem, 18vw, 13rem)' }}
+                aria-hidden
+              >
+                I
+              </span>
+              <span className="relative inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
                 <span className="h-px w-10 bg-gold/30" />
                 Herkenbaar?
                 <span className="h-px w-10 bg-gold/30" />
@@ -611,8 +641,15 @@ export default function Home() {
         {/* Featured Course */}
         <section id="uitgelicht" className="bg-cream-dark py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+            <div className="text-center mb-16 relative">
+              <span
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2 font-serif font-bold leading-none select-none pointer-events-none text-navy/[0.03] hidden md:block"
+                style={{ fontSize: 'clamp(8rem, 18vw, 13rem)' }}
+                aria-hidden
+              >
+                II
+              </span>
+              <span className="relative inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
                 <span className="h-px w-10 bg-gold/30" />
                 Uitgelichte Cursus
                 <span className="h-px w-10 bg-gold/30" />
@@ -697,8 +734,15 @@ export default function Home() {
         {/* Other Courses */}
         <section id="cursussen" className="bg-cream py-24 md:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
+            <div className="text-center mb-16 relative">
+              <span
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2 font-serif font-bold leading-none select-none pointer-events-none text-navy/[0.035] hidden md:block"
+                style={{ fontSize: 'clamp(8rem, 18vw, 13rem)' }}
+                aria-hidden
+              >
+                III
+              </span>
+              <span className="relative inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans">
                 <span className="h-px w-10 bg-gold/30" />
                 Meer Cursussen
                 <span className="h-px w-10 bg-gold/30" />
@@ -710,8 +754,10 @@ export default function Home() {
                 <button
                   key={course.id}
                   onClick={() => setSelectedCourse(course)}
-                  className="text-left bg-cream-dark p-8 md:p-10 hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-cream-darker"
+                  className="text-left bg-cream-dark p-8 md:p-10 hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-cream-darker relative overflow-hidden"
                 >
+                  {/* Sliding gold accent line */}
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                   <div className="flex items-start justify-between mb-5">
                     <span className="text-gold text-xs tracking-widest uppercase bg-gold/10 px-3 py-1.5 font-sans">
                       {course.targetRole}
@@ -741,8 +787,16 @@ export default function Home() {
         </section>
 
         {/* About Chapter */}
-        <section id="over" className="bg-navy py-24 md:py-32 px-6">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+        <section id="over" className="bg-navy py-24 md:py-32 px-6 relative overflow-hidden">
+          {/* Ghost roman numeral */}
+          <span
+            className="absolute left-0 top-1/2 -translate-y-1/2 font-serif font-bold leading-none select-none pointer-events-none text-white/[0.025] hidden lg:block -translate-x-1/4"
+            style={{ fontSize: 'clamp(10rem, 18vw, 16rem)' }}
+            aria-hidden
+          >
+            IV
+          </span>
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 xl:gap-24 items-center relative">
             {/* Text */}
             <div>
               <span className="inline-flex items-center gap-4 text-gold text-xs tracking-widest uppercase font-sans mb-10">
@@ -762,14 +816,15 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Photo */}
+            {/* Photo with gold corner accents */}
             <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
-              {/* Vervang de src hieronder door een eigen foto van een interactieve sessie */}
               <img
                 src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=80"
                 alt="Interactieve Chapter cursus sessie"
                 className="w-full h-full object-cover"
               />
+              <div className="absolute top-5 left-5 w-8 h-8 border-t-2 border-l-2 border-gold/70 pointer-events-none" />
+              <div className="absolute bottom-5 right-5 w-8 h-8 border-b-2 border-r-2 border-gold/70 pointer-events-none" />
             </div>
           </div>
         </section>
@@ -777,25 +832,35 @@ export default function Home() {
         {/* Footer */}
         <footer className="bg-navy-dark">
           {/* Value proposition */}
-          <div className="border-b border-white/10 py-20 px-6 text-center">
-            <div className="flex items-center justify-center gap-4 mb-10">
-              <span className="h-px w-12 bg-white/15 block" />
-              <LogoIcon />
-              <span className="h-px w-12 bg-white/15 block" />
+          <div className="border-b border-white/10 py-24 md:py-32 px-6 text-center relative overflow-hidden">
+            {/* Ghost CHAPTER watermark */}
+            <span
+              className="absolute inset-x-0 top-1/2 -translate-y-1/2 font-serif font-bold leading-none select-none pointer-events-none text-white/[0.02] hidden md:block"
+              style={{ fontSize: 'clamp(5rem, 14vw, 11rem)' }}
+              aria-hidden
+            >
+              CHAPTER
+            </span>
+            <div className="relative">
+              <div className="flex items-center justify-center gap-5 mb-12">
+                <span className="h-px w-16 bg-white/15 block" />
+                <LogoIcon />
+                <span className="h-px w-16 bg-white/15 block" />
+              </div>
+              <p
+                className="font-serif italic text-white font-bold leading-tight max-w-3xl mx-auto mb-12"
+                style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
+              >
+                Met de meest praktische AI cursus ben je als professional klaar voor het volgende hoofdstuk.
+              </p>
+              <a
+                href="#uitgelicht"
+                className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-white font-sans text-sm tracking-wide px-8 py-4 transition-colors"
+              >
+                <span>Begin met het volgende hoofdstuk</span>
+                <IconArrow />
+              </a>
             </div>
-            <p
-              className="font-serif text-white font-bold leading-tight max-w-3xl mx-auto mb-10"
-              style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}
-            >
-              Met de meest praktische AI cursus ben je als professional klaar voor het volgende hoofdstuk.
-            </p>
-            <a
-              href="#uitgelicht"
-              className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-white font-sans text-sm tracking-wide px-8 py-4 transition-colors"
-            >
-              <span>Begin met het volgende hoofdstuk</span>
-              <IconArrow />
-            </a>
           </div>
 
           {/* Copyright */}

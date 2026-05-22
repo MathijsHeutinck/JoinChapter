@@ -26,8 +26,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'Georgia', 'serif'],
       },
       letterSpacing: {
         widest: '0.25em',

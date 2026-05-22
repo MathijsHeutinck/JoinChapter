@@ -1,16 +1,18 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Playfair_Display, Lora } from 'next/font/google'
 import './globals.css'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-serif',
   display: 'swap',
 })
 
-const inter = Inter({
+const lora = Lora({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
   display: 'swap',
 })
 
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="nl" className={`${playfair.variable} ${lora.variable}`}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   )
